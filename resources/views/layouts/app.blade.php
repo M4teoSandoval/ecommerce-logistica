@@ -292,13 +292,13 @@
                 <i class="bi bi-grid-1x2"></i> Dashboard
             </a>
             <div class="nav-section-label">Logística</div>
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('admin.drones.index') }}" class="sidebar-link">
                 <i class="bi bi-send"></i> Drones
             </a>
-            <a href="#" class="sidebar-link">
-                <i class="bi bi-truck"></i> Transportes
+            <a href="{{ route('admin.mantenimientos.index') }}" class="sidebar-link">
+                <i class="bi bi-truck"></i> Mantenimientos
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('admin.simulacion.index') }}" class="sidebar-link">
                 <i class="bi bi-map"></i> Rutas
             </a>
             <div class="nav-section-label">Administración</div>

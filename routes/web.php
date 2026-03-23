@@ -21,6 +21,19 @@ Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'role:administrador'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::resource('productos', \App\Http\Controllers\Proveedor\ProductoController::class);
+
+    // Drones
+    Route::resource('drones', \App\Http\Controllers\Admin\DroneController::class);
+
+    // Mantenimientos
+    Route::get('/mantenimientos', [\App\Http\Controllers\Admin\MantenimientoController::class, 'index'])->name('mantenimientos.index');
+    Route::get('/mantenimientos/crear', [\App\Http\Controllers\Admin\MantenimientoController::class, 'create'])->name('mantenimientos.create');
+    Route::post('/mantenimientos', [\App\Http\Controllers\Admin\MantenimientoController::class, 'store'])->name('mantenimientos.store');
+    Route::patch('/mantenimientos/{mantenimiento}', [\App\Http\Controllers\Admin\MantenimientoController::class, 'update'])->name('mantenimientos.update');
+
+    // Simulación
+    Route::get('/simulacion', [\App\Http\Controllers\Admin\SimulacionController::class, 'index'])->name('simulacion.index');
+    Route::post('/simulacion', [\App\Http\Controllers\Admin\SimulacionController::class, 'simular'])->name('simulacion.simular');
 });
 
 // Panel proveedor
