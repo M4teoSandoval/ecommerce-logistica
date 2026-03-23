@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Resultado Simulación')
 @section('page-title', 'Resultado de Simulación')
-@section('page-subtitle', 'Dron: {{ $drone->nombre }}')
 @section('content')
 
 <div class="row g-4">

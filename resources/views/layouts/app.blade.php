@@ -369,9 +369,6 @@
 </div>
 
 <main class="main-content">
-    @if(session('success'))
-        <div class="alert alert-success mb-4"><i class="bi bi-check-circle me-2"></i>{{ session('success') }}</div>
-    @endif
     @yield('content')
 </main>
 

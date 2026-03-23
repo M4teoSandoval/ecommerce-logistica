@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Editar Dron')
 @section('page-title', 'Editar Dron')
-@section('page-subtitle', $drone->nombre)
 @section('content')
 
 <div class="row justify-content-center">
