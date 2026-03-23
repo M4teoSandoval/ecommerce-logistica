@@ -1,7 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Proveedor\DashboardController as ProveedorDashboard;
+use App\Http\Controllers\Cliente\DashboardController as ClienteDashboard;
 
-Route::get('/', function () {
-    return view('welcome');
+
+// Página principal redirige al login
+Route::get('/', fn() => redirect('/login'));
+
+// Auth
+Route::get('/login',    [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login',   [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
+
+// Panel administrador
+Route::middleware(['auth', 'role:administrador'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+    Route::resource('productos', \App\Http\Controllers\Proveedor\ProductoController::class);
+});
+
+// Panel proveedor
+Route::middleware(['auth', 'role:proveedor'])->prefix('proveedor')->name('proveedor.')->group(function () {
+    Route::get('/dashboard', [ProveedorDashboard::class, 'index'])->name('dashboard');
+    Route::resource('productos', \App\Http\Controllers\Proveedor\ProductoController::class);
+});
+
+// Panel cliente
+Route::middleware(['auth', 'role:cliente'])->prefix('cliente')->name('cliente.')->group(function () {
+    Route::get('/dashboard', [ClienteDashboard::class, 'index'])->name('dashboard');
+    Route::get('/productos', [\App\Http\Controllers\Cliente\ProductoController::class, 'index'])->name('productos.index');
+    Route::get('/productos/{producto}', [\App\Http\Controllers\Cliente\ProductoController::class, 'show'])->name('productos.show');
 });
