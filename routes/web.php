@@ -34,6 +34,10 @@ Route::middleware(['auth', 'role:administrador'])->prefix('admin')->name('admin.
     // Simulación
     Route::get('/simulacion', [\App\Http\Controllers\Admin\SimulacionController::class, 'index'])->name('simulacion.index');
     Route::post('/simulacion', [\App\Http\Controllers\Admin\SimulacionController::class, 'simular'])->name('simulacion.simular');
+
+    Route::get('/seguimiento', [\App\Http\Controllers\Admin\SeguimientoController::class, 'index'])->name('seguimiento.index');
+    Route::get('/seguimiento/{pedido}', [\App\Http\Controllers\Admin\SeguimientoController::class, 'pedido'])->name('seguimiento.pedido');
+    Route::post('/seguimiento/{pedido}', [\App\Http\Controllers\Admin\SeguimientoController::class, 'actualizar'])->name('seguimiento.actualizar');
 });
 
 // Panel proveedor
@@ -56,4 +60,7 @@ Route::middleware(['auth', 'role:cliente'])->prefix('cliente')->name('cliente.')
     Route::get('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'checkout'])->name('carrito.checkout');
     Route::post('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'procesarPedido'])->name('carrito.procesar');
     Route::get('/pedidos', [\App\Http\Controllers\Cliente\CarritoController::class, 'pedidos'])->name('pedidos.index');
+
+    Route::get('/seguimiento/{pedido}', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'index'])->name('seguimiento.index');
+    Route::get('/seguimiento/{pedido}/estado', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'estado'])->name('seguimiento.estado');
 });

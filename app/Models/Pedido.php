@@ -36,7 +36,7 @@ class Pedido extends Model
 
     public function getEstadoColorAttribute(): string
     {
-        return match($this->estado) {
+        return match ($this->estado) {
             'pendiente'  => 'background:#f1f5f9;color:#64748b',
             'confirmado' => 'background:#dbeafe;color:#1d4ed8',
             'en_camino'  => 'background:#fef9c3;color:#854d0e',
@@ -48,11 +48,20 @@ class Pedido extends Model
 
     public function getTransporteIconAttribute(): string
     {
-        return match($this->transporte) {
+        return match ($this->transporte) {
             'dron'      => 'bi-send',
             'moto'      => 'bi-bicycle',
             'furgoneta' => 'bi-truck',
             default     => 'bi-truck',
         };
+    }
+    public function seguimientos()
+    {
+        return $this->hasMany(Seguimiento::class)->orderBy('created_at', 'asc');
+    }
+
+    public function ultimoSeguimiento()
+    {
+        return $this->hasOne(Seguimiento::class)->latestOfMany();
     }
 }

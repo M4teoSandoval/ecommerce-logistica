@@ -299,7 +299,10 @@
                 <i class="bi bi-truck"></i> Mantenimientos
             </a>
             <a href="{{ route('admin.simulacion.index') }}" class="sidebar-link">
-                <i class="bi bi-map"></i> Rutas
+                <i class="bi bi-map"></i> Simular ruta
+            </a>
+            <a href="{{ route('admin.seguimiento.index') }}" class="sidebar-link">
+                <i class="bi bi-geo-alt"></i> Seguimiento
             </a>
             <div class="nav-section-label">Administración</div>
             <a href="#" class="sidebar-link">
@@ -339,9 +342,6 @@
             <div class="nav-section-label">Mis Compras</div>
             <a href="{{ route('cliente.pedidos.index') }}" class="sidebar-link">
                 <i class="bi bi-bag-check"></i> Mis Pedidos
-            </a>
-            <a href="#" class="sidebar-link">
-                <i class="bi bi-geo-alt"></i> Seguimiento
             </a>
         @endif
     </nav>
