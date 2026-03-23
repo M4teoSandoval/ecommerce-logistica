@@ -34,4 +34,13 @@ Route::middleware(['auth', 'role:cliente'])->prefix('cliente')->name('cliente.')
     Route::get('/dashboard', [ClienteDashboard::class, 'index'])->name('dashboard');
     Route::get('/productos', [\App\Http\Controllers\Cliente\ProductoController::class, 'index'])->name('productos.index');
     Route::get('/productos/{producto}', [\App\Http\Controllers\Cliente\ProductoController::class, 'show'])->name('productos.show');
+
+    // Carrito
+    Route::get('/carrito', [\App\Http\Controllers\Cliente\CarritoController::class, 'index'])->name('carrito.index');
+    Route::post('/carrito/{producto}', [\App\Http\Controllers\Cliente\CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::patch('/carrito/item/{item}', [\App\Http\Controllers\Cliente\CarritoController::class, 'actualizar'])->name('carrito.actualizar');
+    Route::delete('/carrito/item/{item}', [\App\Http\Controllers\Cliente\CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::get('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'checkout'])->name('carrito.checkout');
+    Route::post('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'procesarPedido'])->name('carrito.procesar');
+    Route::get('/pedidos', [\App\Http\Controllers\Cliente\CarritoController::class, 'pedidos'])->name('pedidos.index');
 });

@@ -333,11 +333,11 @@
             <a href="{{ route('cliente.productos.index') }}" class="sidebar-link">
                 <i class="bi bi-search"></i> Productos
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('cliente.carrito.index') }}" class="sidebar-link">
                 <i class="bi bi-cart3"></i> Mi Carrito
             </a>
             <div class="nav-section-label">Mis Compras</div>
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('cliente.pedidos.index') }}" class="sidebar-link">
                 <i class="bi bi-bag-check"></i> Mis Pedidos
             </a>
             <a href="#" class="sidebar-link">
