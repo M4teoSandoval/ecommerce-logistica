@@ -17,9 +17,10 @@
                     <th style="font-weight:500;border:none;padding-bottom:14px;">Cliente</th>
                     <th style="font-weight:500;border:none;padding-bottom:14px;">Transporte</th>
                     <th style="font-weight:500;border:none;padding-bottom:14px;">Destino</th>
+                    <th style="font-weight:500;border:none;padding-bottom:14px;">Repartidor</th>
                     <th style="font-weight:500;border:none;padding-bottom:14px;">Último estado</th>
                     <th style="font-weight:500;border:none;padding-bottom:14px;">Total</th>
-                    <th style="font-weight:500;border:none;padding-bottom:14px;">Acción</th>
+                    <th style="font-weight:500;border:none;padding-bottom:14px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +38,27 @@
                     </td>
                     <td style="color:#475569;font-size:0.8rem;">
                         {{ $pedido->ciudad }}<br>
-                        <span style="font-size:0.72rem;color:#94a3b8;">{{ Str::limit($pedido->direccion_entrega, 30) }}</span>
+                        <span style="font-size:0.72rem;color:#94a3b8;">{{ Str::limit($pedido->direccion_entrega, 25) }}</span>
+                    </td>
+                    <td>
+                        @if($pedido->repartidor)
+                            <span style="background:#ffedd5;color:#ea580c;padding:3px 8px;border-radius:6px;font-size:0.72rem;font-weight:600;">
+                                <i class="bi bi-bicycle me-1"></i>{{ $pedido->repartidor->name }}
+                            </span>
+                        @else
+                            <form method="POST" action="{{ route('admin.seguimiento.asignar', $pedido) }}" class="d-flex gap-1">
+                                @csrf
+                                <select name="repartidor_id" class="form-select form-select-sm" style="font-size:0.72rem;padding:4px 8px;border-radius:6px;min-width:130px;" required>
+                                    <option value="">Asignar...</option>
+                                    @foreach($repartidores as $r)
+                                    <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn btn-sm" style="background:#ffedd5;color:#ea580c;border-radius:6px;font-size:0.7rem;padding:4px 8px;">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                            </form>
+                        @endif
                     </td>
                     <td>
                         @if($pedido->ultimoSeguimiento)
@@ -61,7 +82,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center py-4" style="color:#94a3b8;">No hay pedidos activos</td>
+                    <td colspan="8" class="text-center py-4" style="color:#94a3b8;">No hay pedidos activos</td>
                 </tr>
                 @endforelse
             </tbody>

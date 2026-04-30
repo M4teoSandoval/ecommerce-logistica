@@ -38,6 +38,7 @@
                         <option value="">Selecciona...</option>
                         <option value="cliente"   {{ old('role')=='cliente'   ? 'selected':'' }}>Cliente</option>
                         <option value="proveedor" {{ old('role')=='proveedor' ? 'selected':'' }}>Proveedor</option>
+                        <option value="repartidor" {{ old('role')=='repartidor' ? 'selected':'' }}>Repartidor</option>
                     </select>
                 </div>
                 <div class="col-md-6">

@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Seguimiento del Pedido')
 @section('page-title', 'Seguimiento en tiempo real')
-@section('page-subtitle', 'Pedido #{{ $pedido->id }}')
 @section('content')
 
 <div class="row g-4">

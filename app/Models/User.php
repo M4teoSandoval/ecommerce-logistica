@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->role === 'cliente';
     }
 
+    public function isRepartidor(): bool
+    {
+        return $this->role === 'repartidor';
+    }
+
     public function productos()
     {
         return $this->hasMany(Producto::class);
@@ -57,5 +62,10 @@ class User extends Authenticatable
     public function pedidos()
     {
         return $this->hasMany(Pedido::class);
+    }
+
+    public function entregasAsignadas()
+    {
+        return $this->hasMany(Pedido::class, 'repartidor_id');
     }
 }

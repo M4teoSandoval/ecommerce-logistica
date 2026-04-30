@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Gestionar Pedido')
-@section('page-title', 'Gestionar Pedido #{{ $pedido->id }}')
+@section('page-title', 'Gestionar Pedido')
 @section('page-subtitle', 'Actualiza el estado del envío')
 @section('content')
 
@@ -76,6 +76,41 @@
                 <span style="font-weight:600;color:#334155;">{{ $d[1] }}</span>
             </div>
             @endforeach
+        </div>
+
+        <div class="content-card mt-4">
+            <div style="font-size:0.95rem;font-weight:600;color:#0f172a;margin-bottom:16px;">
+                <i class="bi bi-bicycle me-2"></i>Repartidor asignado
+            </div>
+            @if($pedido->repartidor)
+                <div class="d-flex align-items-center gap-2 p-3" style="background:#ffedd5;border-radius:10px;">
+                    <i class="bi bi-person-badge" style="font-size:1.2rem;color:#ea580c;"></i>
+                    <div>
+                        <div style="font-weight:600;color:#9a3412;">{{ $pedido->repartidor->name }}</div>
+                        <div style="font-size:0.75rem;color:#c2410c;">{{ $pedido->repartidor->email }}</div>
+                    </div>
+                    <form method="POST" action="{{ route('admin.seguimiento.asignar', $pedido) }}" class="ms-auto">
+                        @csrf
+                        <input type="hidden" name="repartidor_id" value="">
+                        <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:6px;font-size:0.7rem;padding:4px 8px;">
+                            <i class="bi bi-x"></i> Quitar
+                        </button>
+                    </form>
+                </div>
+            @else
+                <form method="POST" action="{{ route('admin.seguimiento.asignar', $pedido) }}">
+                    @csrf
+                    <select name="repartidor_id" class="form-select mb-2" required>
+                        <option value="">Seleccionar repartidor...</option>
+                        @foreach($repartidores as $r)
+                        <option value="{{ $r->id }}">{{ $r->name }} ({{ $r->email }})</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-sm" style="background:#ffedd5;color:#ea580c;border-radius:8px;font-size:0.78rem;padding:6px 14px;">
+                        <i class="bi bi-person-plus me-1"></i>Asignar repartidor
+                    </button>
+                </form>
+            @endif
         </div>
     </div>
 

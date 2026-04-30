@@ -5,18 +5,32 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pedido;
 use App\Models\Seguimiento;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SeguimientoController extends Controller
 {
     public function index()
     {
-        $pedidos = Pedido::with(['cliente', 'ultimoSeguimiento'])
+        $pedidos = Pedido::with(['cliente', 'ultimoSeguimiento', 'repartidor'])
             ->whereNotIn('estado', ['entregado', 'cancelado'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        return view('admin.seguimiento.index', compact('pedidos'));
+        $repartidores = User::where('role', 'repartidor')->get();
+
+        return view('admin.seguimiento.index', compact('pedidos', 'repartidores'));
+    }
+
+    public function asignarRepartidor(Request $request, Pedido $pedido)
+    {
+        $request->validate([
+            'repartidor_id' => 'required|exists:users,id',
+        ]);
+
+        $pedido->update(['repartidor_id' => $request->repartidor_id]);
+
+        return back()->with('success', 'Repartidor asignado correctamente.');
     }
 
     public function actualizar(Request $request, Pedido $pedido)
@@ -46,6 +60,7 @@ class SeguimientoController extends Controller
     public function pedido(Pedido $pedido)
     {
         $pedido->load(['cliente', 'seguimientos', 'items.producto', 'ultimoSeguimiento']);
-        return view('admin.seguimiento.pedido', compact('pedido'));
+        $repartidores = User::where('role', 'repartidor')->get();
+        return view('admin.seguimiento.pedido', compact('pedido', 'repartidores'));
     }
 }

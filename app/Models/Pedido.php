@@ -8,6 +8,7 @@ class Pedido extends Model
 {
     protected $fillable = [
         'user_id',
+        'repartidor_id',
         'direccion_entrega',
         'ciudad',
         'telefono',
@@ -22,6 +23,11 @@ class Pedido extends Model
     public function cliente()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function repartidor()
+    {
+        return $this->belongsTo(User::class, 'repartidor_id');
     }
 
     public function items()
@@ -63,5 +69,31 @@ class Pedido extends Model
     public function ultimoSeguimiento()
     {
         return $this->hasOne(Seguimiento::class)->latestOfMany();
+    }
+
+    public function scopeDeProveedor($query, $proveedorId)
+    {
+        return $query->whereHas('items.producto', function ($q) use ($proveedorId) {
+            $q->where('user_id', $proveedorId);
+        });
+    }
+
+    public function itemsDeProveedor($proveedorId)
+    {
+        return $this->items()->whereHas('producto', function ($q) use ($proveedorId) {
+            $q->where('user_id', $proveedorId);
+        })->with('producto');
+    }
+
+    public function tieneProductosDeProveedor($proveedorId): bool
+    {
+        return $this->items()->whereHas('producto', function ($q) use ($proveedorId) {
+            $q->where('user_id', $proveedorId);
+        })->exists();
+    }
+
+    public function scopeAsignadoA($query, $repartidorId)
+    {
+        return $query->where('repartidor_id', $repartidorId);
     }
 }

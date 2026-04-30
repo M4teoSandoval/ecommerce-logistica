@@ -65,7 +65,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 
     private function redirectByRole(string $role)
@@ -73,6 +73,7 @@ class AuthController extends Controller
         return match($role) {
             'administrador' => redirect()->route('admin.dashboard'),
             'proveedor'     => redirect()->route('proveedor.dashboard'),
+            'repartidor'    => redirect()->route('repartidor.dashboard'),
             default         => redirect()->route('cliente.dashboard'),
         };
     }

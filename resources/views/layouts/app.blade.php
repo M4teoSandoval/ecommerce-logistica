@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'EcoLogística')</title>
+    <title>@yield('title', 'SwiftDrop')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -151,6 +151,7 @@
         .role-badge.administrador { background: #ede9fe; color: #7c3aed; }
         .role-badge.proveedor     { background: #dcfce7; color: #16a34a; }
         .role-badge.cliente       { background: #dbeafe; color: #1d4ed8; }
+        .role-badge.repartidor    { background: #ffedd5; color: #ea580c; }
 
         /* Main content */
         .main-content {
@@ -282,7 +283,7 @@
 @auth
 <div class="sidebar">
     <div class="sidebar-brand">
-        <h5><span>Eco</span>Logística</h5>
+        <h5><span>Swift</span>Drop</h5>
         <small>Sistema de comercio y logística</small>
     </div>
     <nav class="sidebar-nav">
@@ -322,11 +323,21 @@
             <a href="{{ route('proveedor.productos.index') }}" class="sidebar-link">
                 <i class="bi bi-box-seam"></i> Mis Productos
             </a>
-            <a href="#" class="sidebar-link">
+            <div class="nav-section-label">Gestión</div>
+            <a href="{{ route('proveedor.pedidos.index') }}" class="sidebar-link {{ request()->routeIs('proveedor.pedidos.*') ? 'active' : '' }}">
                 <i class="bi bi-receipt"></i> Pedidos
             </a>
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('proveedor.envios.index') }}" class="sidebar-link {{ request()->routeIs('proveedor.envios.*') ? 'active' : '' }}">
                 <i class="bi bi-truck"></i> Envíos
+            </a>
+        @elseif(Auth::user()->isRepartidor())
+            <div class="nav-section-label">Mi Panel</div>
+            <a href="{{ route('repartidor.dashboard') }}" class="sidebar-link {{ request()->routeIs('repartidor.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+            <div class="nav-section-label">Entregas</div>
+            <a href="{{ route('repartidor.entregas.index') }}" class="sidebar-link {{ request()->routeIs('repartidor.entregas.*') ? 'active' : '' }}">
+                <i class="bi bi-bicycle"></i> Mis Entregas
             </a>
         @else
             <div class="nav-section-label">Tienda</div>
