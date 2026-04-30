@@ -76,8 +76,9 @@ Route::middleware(['auth', 'role:cliente'])->prefix('cliente')->name('cliente.')
     Route::patch('/carrito/item/{item}', [\App\Http\Controllers\Cliente\CarritoController::class, 'actualizar'])->name('carrito.actualizar');
     Route::delete('/carrito/item/{item}', [\App\Http\Controllers\Cliente\CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     Route::get('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'checkout'])->name('carrito.checkout');
-    Route::post('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'procesarPedido'])->name('carrito.procesar');
+    Route::post('/checkout', [\App\Http\Controllers\Cliente\StripeController::class, 'createCheckout'])->name('carrito.procesar');
     Route::get('/pedidos', [\App\Http\Controllers\Cliente\CarritoController::class, 'pedidos'])->name('pedidos.index');
+    Route::get('/stripe/success', [\App\Http\Controllers\Cliente\StripeController::class, 'success'])->name('stripe.success');
 
     Route::get('/seguimiento/{pedido}', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'index'])->name('seguimiento.index');
     Route::get('/seguimiento/{pedido}/estado', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'estado'])->name('seguimiento.estado');
@@ -90,3 +91,6 @@ Route::middleware(['auth', 'role:repartidor'])->prefix('repartidor')->name('repa
     Route::get('/entregas/{pedido}', [\App\Http\Controllers\Repartidor\EntregaController::class, 'show'])->name('entregas.show');
     Route::post('/entregas/{pedido}/actualizar', [\App\Http\Controllers\Repartidor\EntregaController::class, 'actualizarEstado'])->name('entregas.actualizar');
 });
+
+// Stripe webhook (sin autenticación ni CSRF)
+Route::post('/stripe/webhook', [\App\Http\Controllers\Cliente\StripeController::class, 'webhook'])->name('stripe.webhook');

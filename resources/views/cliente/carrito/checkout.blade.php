@@ -75,8 +75,15 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100" style="border-radius:10px;padding:13px;font-size:0.92rem;font-weight:600;">
-                    <i class="bi bi-check-circle me-2"></i>Confirmar pedido
+                    <i class="bi bi-credit-card me-2"></i>Pagar con Stripe
                 </button>
+
+                <div class="text-center mt-3">
+                    <small style="color:#94a3b8;">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Pago seguro con Stripe. Usa tarjeta de prueba: <code>4242 4242 4242 4242</code>
+                    </small>
+                </div>
             </form>
         </div>
     </div>

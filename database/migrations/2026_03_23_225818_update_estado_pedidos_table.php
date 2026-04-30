@@ -9,11 +9,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE pedidos MODIFY COLUMN estado ENUM('pendiente','confirmado','preparando','en_camino','cerca','entregado','cancelado') DEFAULT 'pendiente'");
+        // SQLite no soporta MODIFY COLUMN ni ENUM, se maneja a nivel aplicación
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE pedidos MODIFY COLUMN estado ENUM('pendiente','confirmado','en_camino','entregado','cancelado') DEFAULT 'pendiente'");
+        // No action needed for SQLite
     }
 };

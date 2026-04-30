@@ -8,6 +8,10 @@
         <div class="alert alert-success mb-4"><i class="bi bi-check-circle me-2"></i>{{ session('success') }}</div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger mb-4"><i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}</div>
+    @endif
+
     @if ($pedidos->isEmpty())
         <div class="content-card text-center py-5">
             <div class="stat-icon icon-purple mx-auto mb-3" style="width:64px;height:64px;font-size:1.8rem;">
@@ -41,6 +45,15 @@
                                 style="{{ $pedido->estado_color }};padding:4px 12px;border-radius:8px;font-size:0.75rem;font-weight:600;">
                                 {{ ucfirst(str_replace('_', ' ', $pedido->estado)) }}
                             </span>
+                            @if($pedido->stripe_payment_status === 'paid')
+                                <span style="background:#dcfce7;color:#16a34a;padding:4px 12px;border-radius:8px;font-size:0.75rem;font-weight:600;">
+                                    <i class="bi bi-check-circle me-1"></i>Pagado
+                                </span>
+                            @elseif($pedido->stripe_payment_status === 'pending')
+                                <span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:8px;font-size:0.75rem;font-weight:600;">
+                                    <i class="bi bi-clock me-1"></i>Pago pendiente
+                                </span>
+                            @endif
                             <div style="font-size:1rem;font-weight:700;color:#0f172a;">{{ $pedido->total_formateado }}</div>
                         </div>
                     </div>
