@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
 use App\Models\CarritoItem;
+use App\Models\Drone;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
 use Illuminate\Http\Request;
@@ -30,6 +31,17 @@ class StripeController extends Controller
             ->get();
 
         abort_if($items->isEmpty(), 403);
+
+        if ($request->transporte === 'dron') {
+            $pesoTotal = $items->sum(fn($i) => $i->cantidad * $i->producto->peso);
+            $maxPesoDron = Drone::where('estado', 'disponible')->max('peso_maximo');
+
+            if ($maxPesoDron && $pesoTotal > $maxPesoDron) {
+                return back()->withErrors([
+                    'transporte' => "El peso total del pedido ($pesoTotal kg) supera la capacidad máxima del dron ($maxPesoDron kg). Por favor elige moto o furgoneta.",
+                ])->withInput();
+            }
+        }
 
         $subtotal = $items->sum(fn($i) => $i->cantidad * $i->producto->precio);
 

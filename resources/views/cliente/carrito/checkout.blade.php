@@ -21,6 +21,14 @@
                 </div>
             @endif
 
+            @if($maxPesoDron && $pesoTotal > $maxPesoDron)
+                <div class="alert alert-warning mb-4">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Peso total del pedido: {{ $pesoTotal }} kg</strong> — supera la capacidad del dron
+                    ({{ $maxPesoDron }} kg). Selecciona <strong>moto</strong> o <strong>furgoneta</strong>.
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('cliente.carrito.procesar') }}">
                 @csrf
                 <div class="row g-3 mb-4">
@@ -74,6 +82,13 @@
                     @endforeach
                 </div>
 
+                <div id="peso-alert" class="alert alert-warning d-none align-items-center gap-2 mb-3 py-2" style="font-size:0.82rem;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>El peso total (<strong>{{ $pesoTotal }} kg</strong>) supera la capacidad del dron
+                    @if($maxPesoDron)(máx. {{ $maxPesoDron }} kg)@endif.
+                    Cambia a <strong>moto</strong> o <strong>furgoneta</strong>.</span>
+                </div>
+
                 <button type="submit" class="btn btn-primary w-100" style="border-radius:10px;padding:13px;font-size:0.92rem;font-weight:600;">
                     <i class="bi bi-credit-card me-2"></i>Pagar con Stripe
                 </button>
@@ -98,7 +113,7 @@
                 </div>
                 <div style="flex:1;">
                     <div style="font-size:0.82rem;font-weight:600;color:#334155;">{{ Str::limit($item->producto->nombre, 30) }}</div>
-                    <div style="font-size:0.72rem;color:#94a3b8;">x{{ $item->cantidad }}</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;">x{{ $item->cantidad }} — {{ $item->producto->peso }} kg c/u</div>
                 </div>
                 <div style="font-size:0.85rem;font-weight:700;color:#0f172a;">
                     ${{ number_format($item->cantidad * $item->producto->precio, 0, ',', '.') }}
@@ -106,6 +121,10 @@
             </div>
             @endforeach
             <hr style="border-color:#f1f5f9;">
+            <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;color:#64748b;">
+                <span>Peso total</span>
+                <span id="peso-total">{{ $pesoTotal }} kg</span>
+            </div>
             <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;color:#64748b;">
                 <span>Subtotal</span>
                 <span>${{ number_format($subtotal, 0, ',', '.') }}</span>
@@ -126,6 +145,8 @@
 @push('scripts')
 <script>
 const subtotal = {{ $subtotal }};
+const pesoTotal = {{ $pesoTotal }};
+const maxPesoDron = {{ $maxPesoDron ?? 'null' }};
 const costos = { dron: 8000, moto: 5000, furgoneta: 12000 };
 
 function formatNum(n) {
@@ -146,6 +167,12 @@ function updateTotal(transporte) {
         const card = selected.nextElementSibling;
         card.style.borderColor = '#6366f1';
         card.style.background = '#f5f3ff';
+    }
+
+    if (transporte === 'dron' && maxPesoDron && pesoTotal > maxPesoDron) {
+        document.getElementById('peso-alert').style.display = 'flex';
+    } else {
+        document.getElementById('peso-alert').style.display = 'none';
     }
 }
 
