@@ -75,7 +75,7 @@
                 <div class="mb-4">
                     @if($producto->imagen)
                         <div class="mb-3 d-flex align-items-center gap-3">
-                            <img src="{{ asset('storage/'.$producto->imagen) }}"
+                            <img src="{{ route('imagenes.servir', ['path' => $producto->imagen]) }}"
                                  style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:1px solid #f1f5f9;">
                             <div style="font-size:0.8rem;color:#64748b;">Imagen actual. Sube una nueva para reemplazarla.</div>
                         </div>

@@ -47,7 +47,7 @@
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 @if($producto->imagen)
-                                    <img src="{{ asset('storage/'.$producto->imagen) }}"
+                                    <img src="{{ route('imagenes.servir', ['path' => $producto->imagen]) }}"
                                          style="width:42px;height:42px;object-fit:cover;border-radius:10px;border:1px solid #f1f5f9;">
                                 @else
                                     <div class="stat-icon icon-purple" style="width:42px;height:42px;font-size:1rem;flex-shrink:0;">

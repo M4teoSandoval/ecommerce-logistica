@@ -26,7 +26,7 @@
             @foreach($items as $item)
             <div class="d-flex align-items-center gap-3 p-3 mb-3" style="background:#f8fafc;border-radius:12px;">
                 @if($item->producto->imagen)
-                    <img src="{{ asset('storage/'.$item->producto->imagen) }}"
+                    <img src="{{ route('imagenes.servir', ['path' => $item->producto->imagen]) }}"
                          style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;">
                 @else
                     <div class="stat-icon icon-purple" style="width:64px;height:64px;font-size:1.4rem;flex-shrink:0;">

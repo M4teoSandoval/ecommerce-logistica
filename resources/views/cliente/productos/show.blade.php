@@ -8,7 +8,7 @@
         <div class="col-md-5">
             <div class="content-card p-0 overflow-hidden">
                 @if ($producto->imagen)
-                    <img src="{{ asset('storage/' . $producto->imagen) }}"
+                    <img src="{{ route('imagenes.servir', ['path' => $producto->imagen]) }}"
                         style="width:100%;max-height:380px;object-fit:cover;">
                 @else
                     <div

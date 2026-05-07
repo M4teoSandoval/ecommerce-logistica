@@ -22,6 +22,15 @@ Route::get('/', function () {
 // Auth
 Route::get('/login',    [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login',   [AuthController::class, 'login']);
+
+// Servir imágenes desde storage (evita problemas con symlinks en Railway)
+Route::get('/imagen', function (\Illuminate\Http\Request $request) {
+    $path = $request->query('path');
+    if (!$path) abort(404);
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) abort(404);
+    return response()->file($fullPath);
+})->name('imagenes.servir');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');

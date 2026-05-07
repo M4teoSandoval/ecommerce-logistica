@@ -49,7 +49,7 @@
                  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'"
                  onmouseout="this.style.transform='';this.style.boxShadow=''">
                 @if($producto->imagen)
-                    <img src="{{ asset('storage/'.$producto->imagen) }}"
+                    <img src="{{ route('imagenes.servir', ['path' => $producto->imagen]) }}"
                          style="width:100%;height:160px;object-fit:cover;">
                 @else
                     <div style="width:100%;height:160px;background:linear-gradient(135deg,#ede9fe,#dbeafe);display:flex;align-items:center;justify-content:center;">
