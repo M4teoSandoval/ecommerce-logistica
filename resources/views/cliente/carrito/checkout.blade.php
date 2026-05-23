@@ -29,7 +29,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cliente.carrito.procesar') }}">
+            <form method="POST" action="{{ route('cliente.carrito.procesar') }}" id="checkoutForm">
                 @csrf
                 <div class="row g-3 mb-4">
                     <div class="col-12">
@@ -59,11 +59,14 @@
                 </div>
 
                 <div class="row g-3 mb-4">
-                    @foreach([
-                        ['dron','Dron','Entregas rápidas hasta 2kg','bi-send','$8.000','icon-purple'],
-                        ['moto','Moto','Entregas locales económicas','bi-bicycle','$5.000','icon-blue'],
-                        ['furgoneta','Furgoneta','Paquetes grandes o pesados','bi-truck','$12.000','icon-green'],
-                    ] as $t)
+                    @php
+                        $transportes = [
+                            ['dron','Dron','bi-send','Entregas rápidas hasta 2kg','$8.000','icon-purple'],
+                            ['moto','Moto','bi-bicycle','Entregas locales económicas','$5.000','icon-blue'],
+                            ['furgoneta','Furgoneta','bi-truck','Paquetes grandes o pesados','$12.000','icon-green'],
+                        ];
+                    @endphp
+                    @foreach($transportes as $t)
                     <div class="col-md-4">
                         <label style="cursor:pointer;display:block;">
                             <input type="radio" name="transporte" value="{{ $t[0] }}"
@@ -74,7 +77,7 @@
                                     <i class="bi {{ $t[2] }}"></i>
                                 </div>
                                 <div style="font-size:0.85rem;font-weight:600;color:#334155;">{{ $t[1] }}</div>
-                                <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">{{ $t[2] }}</div>
+                                <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">{{ $t[3] }}</div>
                                 <div style="font-size:0.88rem;font-weight:700;color:#6366f1;margin-top:6px;">{{ $t[4] }}</div>
                             </div>
                         </label>
@@ -89,14 +92,18 @@
                     Cambia a <strong>moto</strong> o <strong>furgoneta</strong>.</span>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100" style="border-radius:10px;padding:13px;font-size:0.92rem;font-weight:600;">
+                <button type="submit" class="btn btn-primary w-100" id="payBtn"
+                    style="border-radius:10px;padding:13px;font-size:0.92rem;font-weight:600;">
                     <i class="bi bi-credit-card me-2"></i>Pagar con Stripe
                 </button>
 
                 <div class="text-center mt-3">
                     <small style="color:#94a3b8;">
                         <i class="bi bi-shield-lock me-1"></i>
-                        Pago seguro con Stripe. Usa tarjeta de prueba: <code>4242 4242 4242 4242</code>
+                        Pago seguro cifrado con Stripe
+                        @if(!app()->environment('production'))
+                            · Usa <code>4242 4242 4242 4242</code>
+                        @endif
                     </small>
                 </div>
             </form>
@@ -108,14 +115,20 @@
             <div style="font-size:0.95rem;font-weight:600;color:#0f172a;margin-bottom:16px;">Tu pedido</div>
             @foreach($items as $item)
             <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="stat-icon icon-purple" style="width:40px;height:40px;font-size:0.9rem;flex-shrink:0;">
-                    <i class="bi bi-box"></i>
+                @if($item->producto->imagen)
+                    <img src="{{ route('imagenes.servir', ['path' => $item->producto->imagen]) }}"
+                         alt="{{ $item->producto->nombre }}"
+                         style="width:40px;height:40px;object-fit:contain;border-radius:8px;flex-shrink:0;background:#f8fafc;padding:4px;">
+                @else
+                    <div class="stat-icon icon-purple" style="width:40px;height:40px;font-size:0.9rem;flex-shrink:0;">
+                        <i class="bi bi-box"></i>
+                    </div>
+                @endif
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:0.82rem;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $item->producto->nombre }}</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;">x{{ $item->cantidad }} · {{ $item->producto->peso }} kg</div>
                 </div>
-                <div style="flex:1;">
-                    <div style="font-size:0.82rem;font-weight:600;color:#334155;">{{ Str::limit($item->producto->nombre, 30) }}</div>
-                    <div style="font-size:0.72rem;color:#94a3b8;">x{{ $item->cantidad }} — {{ $item->producto->peso }} kg c/u</div>
-                </div>
-                <div style="font-size:0.85rem;font-weight:700;color:#0f172a;">
+                <div style="font-size:0.85rem;font-weight:700;color:#0f172a;white-space:nowrap;">
                     ${{ number_format($item->cantidad * $item->producto->precio, 0, ',', '.') }}
                 </div>
             </div>
@@ -169,15 +182,22 @@ function updateTotal(transporte) {
         card.style.background = '#f5f3ff';
     }
 
+    const alert = document.getElementById('peso-alert');
     if (transporte === 'dron' && maxPesoDron && pesoTotal > maxPesoDron) {
-        document.getElementById('peso-alert').style.display = 'flex';
+        alert.style.display = 'flex';
     } else {
-        document.getElementById('peso-alert').style.display = 'none';
+        alert.style.display = 'none';
     }
 }
 
 document.querySelectorAll('.transport-radio').forEach(radio => {
     radio.addEventListener('change', () => updateTotal(radio.value));
+});
+
+document.getElementById('checkoutForm').addEventListener('submit', function() {
+    const btn = document.getElementById('payBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando pago...';
 });
 
 updateTotal('{{ old('transporte', 'moto') }}');

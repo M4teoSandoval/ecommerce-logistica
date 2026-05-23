@@ -47,7 +47,7 @@
         <tbody>
             @foreach ($factura->pedido->items as $item)
                 <tr style="border-bottom:1px solid #f8fafc;">
-                    <td style="padding:10px 12px;font-size:0.82rem;color:#334155;">{{ $item->producto->nombre ?? 'Producto' }}</td>
+                    <td style="padding:10px 12px;font-size:0.82rem;color:#334155;">{{ $item->producto->nombre ?? 'Producto eliminado' }}</td>
                     <td style="text-align:center;padding:10px 12px;font-size:0.82rem;color:#64748b;">{{ $item->cantidad }}</td>
                     <td style="text-align:right;padding:10px 12px;font-size:0.82rem;color:#64748b;">${{ number_format($item->precio_unitario, 0, ',', '.') }}</td>
                     <td style="text-align:right;padding:10px 12px;font-size:0.82rem;font-weight:600;color:#0f172a;">${{ number_format($item->subtotal, 0, ',', '.') }}</td>

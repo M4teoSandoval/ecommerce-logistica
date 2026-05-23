@@ -344,10 +344,10 @@
             <a href="{{ route('cliente.dashboard') }}" class="sidebar-link {{ request()->routeIs('cliente.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2"></i> Inicio
             </a>
-            <a href="{{ route('cliente.productos.index') }}" class="sidebar-link">
+            <a href="{{ route('cliente.productos.index') }}" class="sidebar-link {{ request()->routeIs('cliente.productos.*') ? 'active' : '' }}">
                 <i class="bi bi-search"></i> Productos
             </a>
-            <a href="{{ route('cliente.carrito.index') }}" class="sidebar-link">
+            <a href="{{ route('cliente.carrito.index') }}" class="sidebar-link {{ request()->routeIs('cliente.carrito.*') ? 'active' : '' }}">
                 <i class="bi bi-cart3"></i> Mi Carrito
             </a>
             <div class="nav-section-label">Mis Compras</div>

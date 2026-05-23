@@ -5,7 +5,7 @@
     <div class="auth-card" style="max-width:460px;">
         <div class="auth-logo"><i class="bi bi-person-plus"></i></div>
         <h5 class="text-center fw-700 mb-1" style="font-weight:700; color:#0f172a;">Crear cuenta</h5>
-        <p class="text-center text-muted mb-4" style="font-size:0.85rem;">Únete a EcoLogística hoy</p>
+        <p class="text-center text-muted mb-4" style="font-size:0.85rem;">Únete a SwiftDrop hoy</p>
 
         @if($errors->any())
             <div class="alert alert-danger mb-3">

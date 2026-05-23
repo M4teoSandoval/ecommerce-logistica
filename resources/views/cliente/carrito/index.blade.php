@@ -22,41 +22,45 @@
 <div class="row g-4">
     <div class="col-md-8">
         <div class="content-card">
-            <div style="font-size:0.95rem;font-weight:600;color:#0f172a;margin-bottom:20px;">Productos en tu carrito</div>
+            <div style="font-size:0.95rem;font-weight:600;color:#0f172a;margin-bottom:20px;">
+                Productos en tu carrito <span style="color:#94a3b8;font-weight:400;">({{ $items->sum('cantidad') }} unidades)</span>
+            </div>
             @foreach($items as $item)
             <div class="d-flex align-items-center gap-3 p-3 mb-3" style="background:#f8fafc;border-radius:12px;">
                 @if($item->producto->imagen)
                     <img src="{{ route('imagenes.servir', ['path' => $item->producto->imagen]) }}"
-                         style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+                         alt="{{ $item->producto->nombre }}"
+                         loading="lazy"
+                         style="width:64px;height:64px;object-fit:contain;border-radius:10px;flex-shrink:0;background:#fff;padding:4px;">
                 @else
                     <div class="stat-icon icon-purple" style="width:64px;height:64px;font-size:1.4rem;flex-shrink:0;">
                         <i class="bi bi-box"></i>
                     </div>
                 @endif
-                <div style="flex:1;">
-                    <div style="font-size:0.88rem;font-weight:600;color:#334155;">{{ $item->producto->nombre }}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:0.88rem;font-weight:600;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ $item->producto->nombre }}</div>
                     <div style="font-size:0.75rem;color:#94a3b8;">{{ $item->producto->categoria }}</div>
                     <div style="font-size:0.82rem;font-weight:700;color:#6366f1;margin-top:4px;">
-                        {{ $item->producto->precio_formateado }}
+                        {{ $item->producto->precio_formateado }} c/u
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <form method="POST" action="{{ route('cliente.carrito.actualizar', $item) }}">
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <form method="POST" action="{{ route('cliente.carrito.actualizar', $item) }}" class="d-inline">
                         @csrf @method('PATCH')
-                        <div class="d-flex align-items-center gap-1">
+                        <div class="d-flex align-items-center gap-1" style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:2px;">
                             <button type="submit" name="cantidad" value="{{ max(1, $item->cantidad - 1) }}"
-                                    class="btn btn-sm" style="background:#e2e8f0;border-radius:7px;width:30px;height:30px;padding:0;font-size:0.9rem;">−</button>
-                            <span style="font-size:0.88rem;font-weight:600;color:#334155;min-width:24px;text-align:center;">{{ $item->cantidad }}</span>
+                                    class="btn btn-sm" style="border:none;background:transparent;border-radius:6px;width:30px;height:30px;padding:0;font-size:0.9rem;color:#475569;">−</button>
+                            <span style="font-size:0.85rem;font-weight:600;color:#0f172a;min-width:24px;text-align:center;">{{ $item->cantidad }}</span>
                             <button type="submit" name="cantidad" value="{{ min($item->producto->stock, $item->cantidad + 1) }}"
-                                    class="btn btn-sm" style="background:#e2e8f0;border-radius:7px;width:30px;height:30px;padding:0;font-size:0.9rem;">+</button>
+                                    class="btn btn-sm" style="border:none;background:transparent;border-radius:6px;width:30px;height:30px;padding:0;font-size:0.9rem;color:#475569;">+</button>
                         </div>
                     </form>
-                    <div style="font-size:0.88rem;font-weight:700;color:#0f172a;min-width:80px;text-align:right;">
+                    <div style="font-size:0.9rem;font-weight:700;color:#0f172a;min-width:80px;text-align:right;">
                         ${{ number_format($item->cantidad * $item->producto->precio, 0, ',', '.') }}
                     </div>
-                    <form method="POST" action="{{ route('cliente.carrito.eliminar', $item) }}">
+                    <form method="POST" action="{{ route('cliente.carrito.eliminar', $item) }}" onsubmit="return confirm('¿Eliminar {{ $item->producto->nombre }} del carrito?')">
                         @csrf @method('DELETE')
-                        <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;border:none;width:32px;height:32px;padding:0;">
+                        <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border-radius:7px;border:none;width:32px;height:32px;padding:0;" title="Eliminar">
                             <i class="bi bi-trash" style="font-size:0.8rem;"></i>
                         </button>
                     </form>
@@ -69,7 +73,7 @@
         <div class="content-card">
             <div style="font-size:0.95rem;font-weight:600;color:#0f172a;margin-bottom:20px;">Resumen del pedido</div>
             <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;color:#64748b;">
-                <span>Subtotal</span>
+                <span>Subtotal ({{ $items->sum('cantidad') }} items)</span>
                 <span>${{ number_format($subtotal, 0, ',', '.') }}</span>
             </div>
             <div class="d-flex justify-content-between mb-2" style="font-size:0.85rem;color:#64748b;">

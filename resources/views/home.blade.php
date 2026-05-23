@@ -487,6 +487,7 @@
                         <span class="small text-secondary">¿Sin cuenta? </span>
                         <a href="/register" class="text-primary fw-semibold text-decoration-none">Regístrate gratis</a>
                     </div>
+                    @if(!app()->environment('production'))
                     <div class="mt-3">
                         <div class="text-center small text-secondary mb-2">🔐 Acceso rápido demostración</div>
                         <div class="row g-2">
@@ -512,6 +513,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -743,7 +745,7 @@
 <footer class="pt-5 pb-3">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-3"><div class="fw-bold text-white fs-5"><span class="text-primary">Eco</span>Logística</div><p class="text-secondary-emphasis small mt-2">Plataforma integral de e-commerce + logística inteligente. Proyecto de innovación tecnológica.</p></div>
+            <div class="col-md-4 mb-3"><div class="fw-bold text-white fs-5"><span class="text-primary">Swift</span>Drop</div><p class="text-white-50 small mt-2">Plataforma integral de e-commerce + logística inteligente. Proyecto de innovación tecnológica.</p></div>
             <div class="col-md-2"><h6 class="text-white-50">Plataforma</h6><a href="#features" class="footer-link d-block">Funcionalidades</a><a href="#transporte" class="footer-link d-block">Transporte</a><a href="#como-funciona" class="footer-link d-block">Guía</a></div>
             <div class="col-md-2"><h6 class="text-white-50">Equipo</h6><a href="#quienes-somos" class="footer-link d-block">Quiénes somos</a><a href="#demo" class="footer-link d-block">Demo</a></div>
             <div class="col-md-2"><h6 class="text-white-50">Soporte</h6><a href="#" class="footer-link d-block">Centro ayuda</a><a href="#" class="footer-link d-block">Términos</a></div>
