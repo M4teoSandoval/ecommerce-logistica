@@ -129,8 +129,44 @@ class StripeController extends Controller
                 ->with('error', 'Sesión de pago no válida.');
         }
 
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        try {
+            $session = Session::retrieve($sessionId);
+        } catch (\Exception $e) {
+            Log::error('Error al recuperar sesión Stripe: ' . $e->getMessage());
+            return redirect()->route('cliente.pedidos.index')
+                ->with('error', 'Error al verificar el pago. Contacta a soporte.');
+        }
+
+        if ($session->payment_status !== 'paid') {
+            return redirect()->route('cliente.pedidos.index')
+                ->with('error', 'El pago no fue completado.');
+        }
+
+        $pedido = Pedido::where('stripe_session_id', $sessionId)->first();
+
+        if (!$pedido) {
+            return redirect()->route('cliente.pedidos.index')
+                ->with('error', 'Pedido no encontrado.');
+        }
+
+        $pedido->update([
+            'stripe_payment_status' => 'paid',
+            'estado'                => 'confirmado',
+        ]);
+
+        try {
+            app(FacturacionService::class)->generar($pedido);
+            Log::info('Factura generada para pedido #' . $pedido->id);
+        } catch (\Exception $e) {
+            Log::error('Error al generar factura: ' . $e->getMessage());
+        }
+
+        Log::info('Pedido #' . $pedido->id . ' confirmado vía success callback.');
+
         return redirect()->route('cliente.pedidos.index')
-            ->with('success', '¡Pago exitoso! Tu pedido ha sido confirmado.');
+            ->with('success', '¡Pago exitoso! Tu pedido #' . $pedido->id . ' ha sido confirmado.');
     }
 
     public function webhook(Request $request)
