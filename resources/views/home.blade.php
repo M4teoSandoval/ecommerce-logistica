@@ -449,10 +449,10 @@
                     <a href="/register" class="btn-hero-primary"><i class="bi bi-rocket-takeoff"></i> Comenzar ahora</a>
                     <a href="#como-funciona" class="btn-hero-secondary"><i class="bi bi-play-circle"></i> Ver demo</a>
                 </div>
-                <div class="d-flex gap-4 mt-5">
-                    <div><div class="fw-bold text-white fs-3">3+</div><div class="text-secondary-emphasis small">Medios de transporte</div></div>
-                    <div><div class="fw-bold text-white fs-3">99.5%</div><div class="text-secondary-emphasis small">Disponibilidad</div></div>
-                    <div><div class="fw-bold text-white fs-3">10s</div><div class="text-secondary-emphasis small">Actualización GPS</div></div>
+                <div class="d-flex gap-4 mt-5 ">
+                    <div><div class="fw-bold text-white fs-3">3+</div><div class="text-white-50 small">Medios de transporte</div></div>
+                    <div><div class="fw-bold text-white fs-3">99.5%</div><div class="text-white-50 small">Disponibilidad</div></div>
+                    <div><div class="fw-bold text-white fs-3">10s</div><div class="text-white-50 small">Actualización GPS</div></div>
                 </div>
             </div>
 

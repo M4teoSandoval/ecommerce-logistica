@@ -7,6 +7,7 @@ use App\Models\CarritoItem;
 use App\Models\Drone;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
+use App\Services\FacturacionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -157,6 +158,13 @@ class StripeController extends Controller
                     'stripe_payment_status' => $session->payment_status,
                     'estado'                => 'confirmado',
                 ]);
+
+                try {
+                    app(FacturacionService::class)->generar($pedido);
+                    Log::info('Factura generada para pedido #' . $pedido->id);
+                } catch (\Exception $e) {
+                    Log::error('Error al generar factura para pedido #' . $pedido->id . ': ' . $e->getMessage());
+                }
 
                 Log::info('Pedido #' . $pedido->id . ' confirmado vía Stripe webhook.');
             }

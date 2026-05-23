@@ -8,9 +8,13 @@ use App\Models\Drone;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
 use App\Models\Producto;
+use App\Models\Seguimiento;
+use App\Services\FacturacionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CarritoController extends Controller
 {
@@ -122,7 +126,7 @@ class CarritoController extends Controller
             default     => 5000,
         };
 
-        DB::transaction(function () use ($request, $items, $subtotal, $costoEnvio) {
+        $pedido = DB::transaction(function () use ($request, $items, $subtotal, $costoEnvio) {
             $pedido = Pedido::create([
                 'user_id'           => Auth::id(),
                 'direccion_entrega' => $request->direccion_entrega,
@@ -145,13 +149,19 @@ class CarritoController extends Controller
                     'subtotal'       => $item->cantidad * $item->producto->precio,
                 ]);
 
-                // Descontar stock
                 $item->producto->decrement('stock', $item->cantidad);
             }
 
-            // Vaciar carrito
             CarritoItem::where('user_id', Auth::id())->delete();
+
+            return $pedido;
         });
+
+        try {
+            app(FacturacionService::class)->generar($pedido);
+        } catch (\Exception $e) {
+            Log::error('Error al generar factura: ' . $e->getMessage());
+        }
 
         return redirect()->route('cliente.pedidos.index')
             ->with('success', '¡Pedido realizado exitosamente!');
@@ -160,10 +170,54 @@ class CarritoController extends Controller
     public function pedidos()
     {
         $pedidos = Pedido::where('user_id', Auth::id())
-            ->with('items.producto')
+            ->with('items.producto', 'factura')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('cliente.pedidos.index', compact('pedidos'));
+    }
+
+    public function cancelar(Pedido $pedido)
+    {
+        abort_if($pedido->user_id !== Auth::id(), 403);
+
+        $estadosPermitidos = ['pendiente', 'confirmado'];
+        if (!in_array($pedido->estado, $estadosPermitidos)) {
+            return back()->with('error', 'Este pedido ya no puede cancelarse porque está en tránsito o ya fue entregado.');
+        }
+
+        $tiempoLimiteMinutos = 30;
+        if ($pedido->stripe_payment_status === 'paid') {
+            $minutosDesdeCreacion = Carbon::parse($pedido->created_at)->diffInMinutes(now());
+            if ($minutosDesdeCreacion > $tiempoLimiteMinutos) {
+                return back()->with('error', "Han pasado más de {$tiempoLimiteMinutos} minutos desde el pago. Ya no es posible cancelar.");
+            }
+        }
+
+        DB::transaction(function () use ($pedido) {
+            foreach ($pedido->items as $item) {
+                $item->producto->increment('stock', $item->cantidad);
+            }
+
+            $pedido->update([
+                'estado'      => 'cancelado',
+                'canceled_at' => now(),
+            ]);
+
+            if ($pedido->stripe_payment_status === 'paid') {
+                $pedido->update(['stripe_payment_status' => 'refunded']);
+            }
+
+            Seguimiento::create([
+                'pedido_id'   => $pedido->id,
+                'estado'      => 'cancelado',
+                'descripcion' => $pedido->stripe_payment_status === 'refunded'
+                    ? 'Pedido cancelado por el cliente. Pago reembolsado (simulado).'
+                    : 'Pedido cancelado por el cliente.',
+            ]);
+        });
+
+        return redirect()->route('cliente.pedidos.index')
+            ->with('success', 'Pedido #' . $pedido->id . ' cancelado exitosamente.');
     }
 }

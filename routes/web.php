@@ -87,7 +87,13 @@ Route::middleware(['auth', 'role:cliente'])->prefix('cliente')->name('cliente.')
     Route::get('/checkout', [\App\Http\Controllers\Cliente\CarritoController::class, 'checkout'])->name('carrito.checkout');
     Route::post('/checkout', [\App\Http\Controllers\Cliente\StripeController::class, 'createCheckout'])->name('carrito.procesar');
     Route::get('/pedidos', [\App\Http\Controllers\Cliente\CarritoController::class, 'pedidos'])->name('pedidos.index');
+    Route::post('/pedidos/{pedido}/cancelar', [\App\Http\Controllers\Cliente\CarritoController::class, 'cancelar'])->name('pedidos.cancelar');
     Route::get('/stripe/success', [\App\Http\Controllers\Cliente\StripeController::class, 'success'])->name('stripe.success');
+
+    // Facturas
+    Route::get('/facturas', [\App\Http\Controllers\Cliente\FacturaController::class, 'index'])->name('facturas.index');
+    Route::get('/facturas/{factura}', [\App\Http\Controllers\Cliente\FacturaController::class, 'show'])->name('facturas.show');
+    Route::get('/facturas/{factura}/xml', [\App\Http\Controllers\Cliente\FacturaController::class, 'descargarXml'])->name('facturas.descargar');
 
     Route::get('/seguimiento/{pedido}', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'index'])->name('seguimiento.index');
     Route::get('/seguimiento/{pedido}/estado', [\App\Http\Controllers\Cliente\SeguimientoController::class, 'estado'])->name('seguimiento.estado');

@@ -20,6 +20,7 @@ class Pedido extends Model
         'costo_envio',
         'total',
         'notas',
+        'canceled_at',
     ];
 
     public function cliente()
@@ -78,6 +79,11 @@ class Pedido extends Model
         return $query->whereHas('items.producto', function ($q) use ($proveedorId) {
             $q->where('user_id', $proveedorId);
         });
+    }
+
+    public function factura()
+    {
+        return $this->hasOne(Factura::class);
     }
 
     public function itemsDeProveedor($proveedorId)

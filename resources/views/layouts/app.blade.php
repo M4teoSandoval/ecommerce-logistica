@@ -351,8 +351,11 @@
                 <i class="bi bi-cart3"></i> Mi Carrito
             </a>
             <div class="nav-section-label">Mis Compras</div>
-            <a href="{{ route('cliente.pedidos.index') }}" class="sidebar-link">
+            <a href="{{ route('cliente.pedidos.index') }}" class="sidebar-link {{ request()->routeIs('cliente.pedidos.*') ? 'active' : '' }}">
                 <i class="bi bi-bag-check"></i> Mis Pedidos
+            </a>
+            <a href="{{ route('cliente.facturas.index') }}" class="sidebar-link {{ request()->routeIs('cliente.facturas.*') ? 'active' : '' }}">
+                <i class="bi bi-receipt"></i> Mis Facturas
             </a>
         @endif
     </nav>
