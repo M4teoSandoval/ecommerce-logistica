@@ -7,6 +7,7 @@ use App\Models\Pedido;
 use App\Models\Seguimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EntregaController extends Controller
 {
@@ -64,16 +65,18 @@ class EntregaController extends Controller
 
         $descripcion = $request->descripcion ?? $this->descripcionDefault($nuevoEstado);
 
-        Seguimiento::create([
-            'pedido_id'            => $pedido->id,
-            'estado'               => $nuevoEstado,
-            'descripcion'          => $descripcion,
-            'latitud'              => $request->latitud,
-            'longitud'             => $request->longitud,
-            'ubicacion_descripcion'=> $request->ubicacion_descripcion,
-        ]);
+        DB::transaction(function () use ($pedido, $nuevoEstado, $descripcion, $request) {
+            Seguimiento::create([
+                'pedido_id'            => $pedido->id,
+                'estado'               => $nuevoEstado,
+                'descripcion'          => $descripcion,
+                'latitud'              => $request->latitud,
+                'longitud'             => $request->longitud,
+                'ubicacion_descripcion'=> $request->ubicacion_descripcion,
+            ]);
 
-        $pedido->update(['estado' => $nuevoEstado]);
+            $pedido->update(['estado' => $nuevoEstado]);
+        });
 
         return back()->with('success', 'Entrega actualizada a: ' . ucfirst(str_replace('_', ' ', $nuevoEstado)));
     }

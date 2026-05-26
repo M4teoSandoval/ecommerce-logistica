@@ -7,6 +7,7 @@ use App\Models\Pedido;
 use App\Models\Seguimiento;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SeguimientoController extends Controller
 {
@@ -43,16 +44,18 @@ class SeguimientoController extends Controller
             'ubicacion_descripcion'=> 'nullable|string|max:255',
         ]);
 
-        Seguimiento::create([
-            'pedido_id'            => $pedido->id,
-            'estado'               => $request->estado,
-            'descripcion'          => $request->descripcion,
-            'latitud'              => $request->latitud,
-            'longitud'             => $request->longitud,
-            'ubicacion_descripcion'=> $request->ubicacion_descripcion,
-        ]);
+        DB::transaction(function () use ($pedido, $request) {
+            Seguimiento::create([
+                'pedido_id'            => $pedido->id,
+                'estado'               => $request->estado,
+                'descripcion'          => $request->descripcion,
+                'latitud'              => $request->latitud,
+                'longitud'             => $request->longitud,
+                'ubicacion_descripcion'=> $request->ubicacion_descripcion,
+            ]);
 
-        $pedido->update(['estado' => $request->estado]);
+            $pedido->update(['estado' => $request->estado]);
+        });
 
         return back()->with('success', 'Estado actualizado correctamente.');
     }

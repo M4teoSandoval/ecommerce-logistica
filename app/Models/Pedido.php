@@ -48,6 +48,7 @@ class Pedido extends Model
         return match ($this->estado) {
             'pendiente'  => 'background:#f1f5f9;color:#64748b',
             'confirmado' => 'background:#dbeafe;color:#1d4ed8',
+            'preparando' => 'background:#fef3c7;color:#d97706',
             'en_camino'  => 'background:#fef9c3;color:#854d0e',
             'entregado'  => 'background:#dcfce7;color:#16a34a',
             'cancelado'  => 'background:#fee2e2;color:#dc2626',

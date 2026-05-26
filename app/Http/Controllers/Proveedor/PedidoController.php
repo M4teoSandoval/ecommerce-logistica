@@ -7,6 +7,7 @@ use App\Models\Pedido;
 use App\Models\Seguimiento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
@@ -66,14 +67,16 @@ class PedidoController extends Controller
 
         $descripcion = $request->descripcion ?? $this->descripcionDefault($nuevoEstado);
 
-        Seguimiento::create([
-            'pedido_id'            => $pedido->id,
-            'estado'               => $nuevoEstado,
-            'descripcion'          => $descripcion,
-            'ubicacion_descripcion'=> 'Taller del proveedor',
-        ]);
+        DB::transaction(function () use ($pedido, $nuevoEstado, $descripcion) {
+            Seguimiento::create([
+                'pedido_id'            => $pedido->id,
+                'estado'               => $nuevoEstado,
+                'descripcion'          => $descripcion,
+                'ubicacion_descripcion'=> 'Taller del proveedor',
+            ]);
 
-        $pedido->update(['estado' => $nuevoEstado]);
+            $pedido->update(['estado' => $nuevoEstado]);
+        });
 
         return back()->with('success', 'Estado del pedido actualizado a: ' . ucfirst(str_replace('_', ' ', $nuevoEstado)));
     }

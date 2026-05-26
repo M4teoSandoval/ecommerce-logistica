@@ -275,6 +275,26 @@
             transition: all 0.2s;
         }
         .btn-logout:hover { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+        .btn-login-quick {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-login-quick:hover {
+            border-color: #6366f1;
+            background: #ede9fe;
+            color: #6366f1;
+        }
     </style>
     @stack('styles')
 </head>
